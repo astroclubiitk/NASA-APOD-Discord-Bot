@@ -4,11 +4,11 @@ Fetches information from NASA APOD [site](https://apod.nasa.gov/apod/).
 
 ## Demo Look
 
-<img src="assets/demolook.PNG" width="600">
+<img src="assets/demolook.PNG" width="650">
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested. If you wish to contribute to the codebase, feel free to fork the repository and submit a pull request! install the dependencies using
+Before creating an issue, please ensure that it hasn't already been reported/suggested. If you wish to contribute to the codebase, feel free to fork the repository and submit a pull request! Install the dependencies using
 
 ```
 pip install -r requirements.txt
