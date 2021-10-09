@@ -1,10 +1,10 @@
-# NASA APOD Discord Bot <img src="assets/apodlogo.png" width="40">
+# NASA APOD Discord Bot <img src="assets/apodlogo.png" width="50">
 
 Fetches information from NASA APOD [site](https://apod.nasa.gov/apod/).
 
 ## Demo Look
 
-<img src="assets/demolook.PNG" width="700">
+<img src="assets/demolook.PNG" width="600">
 
 ## Contributing
 

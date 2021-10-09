@@ -1,7 +1,6 @@
 import requests
 import shutil
 from bs4 import BeautifulSoup
-from datetime import datetime
 import os
 
 
@@ -31,7 +30,7 @@ class NasaApod:
         # content = soup.select_one("body > p:nth-child(3)").text.strip()
 
         image = soup.select_one("img")
-        filename = f'apod-{datetime.now().strftime("%d-%m-%Y")}.jpg'
+        filename = f"apod-{date}.jpg"
 
         if os.path.exists(filename):
             return date, title, name, credit_link, filename, True

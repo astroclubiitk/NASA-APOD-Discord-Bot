@@ -1,58 +1,89 @@
 ## Author : Gurbaaz Singh Nandra (http://gurbaaz.me)
 
 import discord
+from discord.ext import commands, tasks
 import os
 
-from discord import channel
 from utils import *
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-client = discord.Client()
+bot = commands.Bot("$")
 nasa_client = NasaApod()
 
 
-@client.event
-async def on_ready():
-    print(f"{client.user} is now online")
+@tasks.loop(hours=24)
+async def called_once_a_day():
+    ctx = bot.get_channel(os.getenv("TARGET_CHANNEL_ID"))
+    (
+        date,
+        title,
+        credit,
+        credit_link,
+        filename,
+        status,
+    ) = nasa_client.collect_info()
 
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    message_content = message.content.lower()
-
-    if message.content.startswith(f"$help"):
-        await message.channel.send(
-            """Hello there! I\'m your NASA APOD bot.\nI fetch information from NASA APOD site, where each day a different image or photograph of our universe is featured, along with a brief explanation written by a professional astronomer."""
-        )
-
-    if message.content.startswith(f"$fetch"):
-        (
-            date,
-            title,
-            credit,
-            credit_link,
-            filename,
-            status,
-        ) = nasa_client.collect_info()
-
-        await message.channel.send(
-            f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: 
+    await ctx.send(
+        f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
 **Date** - {date}
 **Title** - {title}
 **Image Credits** - {credit} [{credit_link}]"""
-        )
-        status = False
-        if status:
-            await message.channel.send(file=discord.File(filename))
-        else:
-            await message.channel.send("Could *not* load image!")
-            await message.channel.send(file=discord.File("error.jpg"))
+    )
+
+    if status:
+        await ctx.send(file=discord.File(filename))
+    else:
+        await ctx.send("Could **not** load image!")
+        await ctx.send(file=discord.File("error.jpg"))
 
 
-client.run(os.getenv("TOKEN"))
+@called_once_a_day.before_loop
+async def before():
+    await bot.wait_until_ready()
+    print("Finished waiting")
+
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} is now online 🚀")
+
+
+@bot.command()
+async def author(ctx):
+    """Author of the project"""
+    await ctx.send(
+        """Gurbaaz [http://gurbaaz.me], as part of Astronomy Club IIT Kanpur [https://astroclubiitk.github.io/]"""
+    )
+
+
+@bot.command()
+async def fetch(ctx):
+    """Fetches the NASA Astrophotography of the Day"""
+    (
+        date,
+        title,
+        credit,
+        credit_link,
+        filename,
+        status,
+    ) = nasa_client.collect_info()
+
+    await ctx.send(
+        f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
+**Date** - {date}
+**Title** - {title}
+**Image Credits** - {credit} [{credit_link}]"""
+    )
+
+    if status:
+        await ctx.send(file=discord.File(filename))
+    else:
+        await ctx.send("Could **not** load image!")
+        await ctx.send(file=discord.File("error.jpg"))
+
+
+# called_once_a_day.start()
+bot.run(os.getenv("TOKEN"))
