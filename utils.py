@@ -63,8 +63,7 @@ class NasaApod:
         except:
             media_type = "Video"
             video = soup.select_one("iframe")
-            filename = f"apod-{date}1.mp4"
-            print("Hi")
+            filename = f"apod-{date}.mp4"
 
             video_url = video["src"].split("?")[0]
             if "youtu" in video_url:
