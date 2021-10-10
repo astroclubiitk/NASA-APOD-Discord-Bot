@@ -24,13 +24,15 @@ async def called_once_a_day():
         credit_link,
         filename,
         status,
+        tomorrows_picture,
     ) = nasa_client.collect_info()
 
     await ctx.send(
         f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
 **Date** - {date}
 **Title** - {title}
-**Image Credits** - {credit} [{credit_link}]"""
+**Image Credits** - {credit} [{credit_link}]
+**Tomorrow's picture** - {tomorrows_picture}"""
     )
 
     if status:
@@ -55,7 +57,7 @@ async def on_ready():
 async def author(ctx):
     """Author of the project"""
     await ctx.send(
-        """Gurbaaz [http://gurbaaz.me], as part of Astronomy Club IIT Kanpur [https://astroclubiitk.github.io/]"""
+        """Gurbaaz [http://gurbaaz.me], as part of an initiative of Astronomy Club IIT Kanpur [https://astroclubiitk.github.io/]"""
     )
 
 
@@ -69,19 +71,21 @@ async def fetch(ctx):
         credit_link,
         filename,
         status,
+        tomorrows_image,
     ) = nasa_client.collect_info()
 
     await ctx.send(
-        f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
+        f"""**NASA - Astronomy Picture of the Day** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
 **Date** - {date}
 **Title** - {title}
-**Image Credits** - {credit} [{credit_link}]"""
+**Image Credits** - {credit} [{credit_link}]
+**Tomorrow's Image** - {tomorrows_image}"""
     )
 
     if status:
         await ctx.send(file=discord.File(filename))
     else:
-        await ctx.send("Could **not** load image!")
+        await ctx.send("Could **not** load the media!")
         await ctx.send(file=discord.File("error.jpg"))
 
 

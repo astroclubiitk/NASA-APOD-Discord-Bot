@@ -1,7 +1,9 @@
 import requests
+import urllib.request
 import shutil
 from bs4 import BeautifulSoup
 import os
+import re
 
 
 class NasaApod:
@@ -13,6 +15,7 @@ class NasaApod:
 
     def collect_info(self):
         response = requests.get(self.url, headers=self.headers)
+        print(response.status_code)
         data = response.content
         soup = BeautifulSoup(data, "html.parser")
 
@@ -27,17 +30,35 @@ class NasaApod:
         credit = soup.select_one("body > center:nth-child(2) > a")
         name = credit.text.strip()
         credit_link = credit["href"]
-        # content = soup.select_one("body > p:nth-child(3)").text.strip()
+        content = soup.select_one("body > p:nth-child(3)").text.strip()
 
-        image = soup.select_one("img")
-        filename = f"apod-{date}.jpg"
+        try:
+            tomorrows_image = (
+                re.search("Tomorrow's picture: (.+?)\n", content).group(1).strip()
+            )
+        except:
+            tomorrows_image = "TBA"
 
-        if os.path.exists(filename):
-            return date, title, name, credit_link, filename, True
+        try:
+            image = soup.select_one("img")
+            filename = f"apod-{date}.jpg"
 
-        status = self.download_image(self.url + image["src"], filename)
-        # print(f"{date=}\n\n{title=}\n\n{credit=}\n\n{content=}")
-        return date, title, name, credit_link, filename, status
+            if os.path.exists(filename):
+                return date, title, name, credit_link, filename, True
+            
+            status = self.download_image(self.url + image["src"], filename)
+
+        except:
+            video = soup.select_one("iframe")
+            filename = f"apod-{date}.mp4"
+
+            if os.path.exists(filename):
+                return date, title, name, credit_link, filename, True 
+            
+            status = self.download_video(video["src"], filename)
+
+        print(f"{date=}\n\n{title=}\n\n{credit=}\n\n{tomorrows_image=}")
+        return date, title, name, credit_link, filename, status, tomorrows_image
 
     def download_image(self, image_url, filename):
         r = requests.get(image_url, stream=True)
@@ -49,3 +70,13 @@ class NasaApod:
         else:
             print("Couldn't load image!")
             return False
+
+    def download_video(self, url_link, filename):
+        try:
+            urllib.request.urlretrieve(url_link, filename)
+        except:
+            print("Couldn't load video!")
+
+
+dummy = NasaApod()
+dummy.collect_info()

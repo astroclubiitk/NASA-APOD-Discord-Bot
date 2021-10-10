@@ -1,4 +1,7 @@
+*.env
 
 *__pycache__/
 
 apod*jpg
+
+apod*mp4
