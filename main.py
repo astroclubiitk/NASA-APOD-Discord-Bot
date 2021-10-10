@@ -99,5 +99,5 @@ async def fetch(ctx):
         await ctx.send(file=discord.File("error.jpg"))
 
 
-# called_once_a_day.start()
+called_once_a_day.start()
 bot.run(os.getenv("TOKEN"))
