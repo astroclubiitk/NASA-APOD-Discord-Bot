@@ -12,6 +12,7 @@ class NasaApod:
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.3"
         }
         self.url = "https://apod.nasa.gov/apod/"
+        self.baseurl = "https://apod.nasa.gov/apod/"
 
     def collect_info(self, vimeo_video_quality):
         response = requests.get(self.url, headers=self.headers)
@@ -58,7 +59,7 @@ class NasaApod:
                     is_linkable_video,
                 )
 
-            status = self.download_image(self.url + image["src"], filename)
+            status = self.download_image(self.baseurl + image["src"], filename)
 
         except:
             media_type = "Video"
@@ -153,7 +154,7 @@ class NasaApod:
             return False
 
         try:
-            urllib.request.urlretrieve(self.url + url_link, filename)
+            urllib.request.urlretrieve(self.baseurl + url_link, filename)
         except:
             print("Couldn't load video!")
 

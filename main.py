@@ -14,9 +14,7 @@ bot = commands.Bot("$")
 nasa_client = NasaApod()
 
 
-@tasks.loop(hours=24)
-async def called_once_a_day():
-    ctx = bot.get_channel(int(os.getenv("TARGET_CHANNEL_ID")))
+async def fetcher(ctx):
     (
         date,
         title,
@@ -44,6 +42,12 @@ async def called_once_a_day():
     else:
         await ctx.send("Could **not** load image!")
         await ctx.send(file=discord.File("error.jpg"))
+
+
+@tasks.loop(hours=24)
+async def called_once_a_day():
+    ctx = bot.get_channel(int(os.getenv("TARGET_CHANNEL_ID")))
+    await fetcher(ctx)
 
 
 @called_once_a_day.before_loop
@@ -69,34 +73,8 @@ Author: Gurbaaz [http://gurbaaz.me], as part of an initiative of Astronomy Club 
 
 @bot.command()
 async def fetch(ctx):
-    """Fetches the NASA Astrophotography of the Day"""
-    (
-        date,
-        title,
-        credit,
-        credit_link,
-        resource_link,
-        status,
-        tomorrows_picture,
-        media_type,
-        is_linkable_video,
-    ) = nasa_client.collect_info(bot.vimeo_video_quality)
-
-    await ctx.send(
-        f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
-**Date** - {date}
-**Title** - {title}
-**{media_type} Credits** - {credit} [{credit_link}]
-**Tomorrow's picture** - {tomorrows_picture}"""
-    )
-
-    if is_linkable_video:
-        await ctx.send("{resource_link}")
-    elif status:
-        await ctx.send(file=discord.File(resource_link))
-    else:
-        await ctx.send("Could **not** load image!")
-        await ctx.send(file=discord.File("error.jpg"))
+    """Fetches the NASA Astrophotography of the Day."""
+    await fetcher(ctx)
 
 
 called_once_a_day.start()
