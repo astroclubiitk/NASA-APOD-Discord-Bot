@@ -13,7 +13,7 @@ class NasaApod:
         }
         self.url = "https://apod.nasa.gov/apod/"
 
-    def collect_info(self):
+    def collect_info(self, vimeo_video_quality):
         response = requests.get(self.url, headers=self.headers)
         data = response.content
         soup = BeautifulSoup(data, "html.parser")
@@ -44,16 +44,18 @@ class NasaApod:
             filename = f"apod-{date}.jpg"
 
             if os.path.exists(filename):
+                status = True
+                is_linkable_video = False
                 return (
                     date,
                     title,
                     name,
                     credit_link,
                     filename,
-                    True,
+                    status,
                     tomorrows_picture,
                     media_type,
-                    False,
+                    is_linkable_video,
                 )
 
             status = self.download_image(self.url + image["src"], filename)
@@ -61,38 +63,59 @@ class NasaApod:
         except:
             media_type = "Video"
             video = soup.select_one("iframe")
-            filename = f"apod-{date}.mp4"
+            filename = f"apod-{date}1.mp4"
+            print("Hi")
 
             video_url = video["src"].split("?")[0]
             if "youtu" in video_url:
+                status = True
+                is_linkable_video = True
                 return (
                     date,
                     title,
                     name,
                     credit_link,
                     video_url,
-                    True,
+                    status,
                     tomorrows_picture,
                     media_type,
-                    True,
+                    is_linkable_video,
                 )
 
             if os.path.exists(filename):
+                status = True
+                is_linkable_video = False
                 return (
                     date,
                     title,
                     name,
                     credit_link,
                     filename,
-                    True,
+                    status,
                     tomorrows_picture,
                     media_type,
-                    False,
+                    is_linkable_video,
                 )
 
-            status = self.download_video(video_url, filename)
+            status = self.download_video(video_url, filename, vimeo_video_quality)
+
+            if status == False:
+                status = False
+                is_linkable_video = True
+                return (
+                    date,
+                    title,
+                    name,
+                    credit_link,
+                    video_url,
+                    status,
+                    tomorrows_picture,
+                    media_type,
+                    is_linkable_video,
+                )
 
         # print(f"{date=}\n{title=}\n{credit=}\n{tomorrows_picture=}\n{media_type=}")
+        is_linkable_video = False
         return (
             date,
             title,
@@ -102,7 +125,7 @@ class NasaApod:
             status,
             tomorrows_picture,
             media_type,
-            False,
+            is_linkable_video,
         )
 
     def download_image(self, image_url, filename):
@@ -116,13 +139,19 @@ class NasaApod:
             print("Couldn't load image!")
             return False
 
-    def download_video(self, url_link, filename):
+    def download_video(self, url_link, filename, vimeo_video_quality):
         if "vimeo" in url_link:
             from vimeo_downloader import Vimeo
 
             v = Vimeo(url_link, embedded_on=self.url)
-            v.streams[-1].download(download_directory=".", filename=filename)
-            return True
+            for s in v.streams:
+                print(s.quality)
+                if s.quality == vimeo_video_quality:
+                    s.download(download_directory=".", filename=filename)
+                    return True
+                else:
+                    print("Quality not found")
+            return False
 
         try:
             urllib.request.urlretrieve(self.url + url_link, filename)
@@ -131,4 +160,4 @@ class NasaApod:
 
 
 # dummy = NasaApod()
-# dummy.collect_info()
+# dummy.collect_info('360p')

@@ -26,8 +26,8 @@ async def called_once_a_day():
         status,
         tomorrows_picture,
         media_type,
-        is_youtube_video,
-    ) = nasa_client.collect_info()
+        is_linkable_video,
+    ) = nasa_client.collect_info(bot.vimeo_video_quality)
 
     await ctx.send(
         f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
@@ -37,7 +37,7 @@ async def called_once_a_day():
 **Tomorrow's picture** - {tomorrows_picture}"""
     )
 
-    if is_youtube_video:
+    if is_linkable_video:
         await ctx.send("{resource_link}")
     elif status:
         await ctx.send(file=discord.File(resource_link))
@@ -55,13 +55,15 @@ async def before():
 @bot.event
 async def on_ready():
     print(f"{bot.user} is now online 🚀")
+    bot.vimeo_video_quality = "360p"
 
 
 @bot.command()
-async def author(ctx):
-    """Author of the project"""
+async def about(ctx):
+    """About the project"""
     await ctx.send(
-        """Gurbaaz [http://gurbaaz.me], as part of an initiative of Astronomy Club IIT Kanpur [https://astroclubiitk.github.io/]"""
+        """Hello there! I'm your NASA APOD bot. I fetch information from NASA APOD site [https://apod.nasa.gov/apod/], where each day a different image or photograph of our universe is featured, along with a brief explanation written by a professional astronomer.
+Author: Gurbaaz [http://gurbaaz.me], as part of an initiative of Astronomy Club IIT Kanpur [https://astroclubiitk.github.io/]"""
     )
 
 
@@ -77,8 +79,8 @@ async def fetch(ctx):
         status,
         tomorrows_picture,
         media_type,
-        is_youtube_video,
-    ) = nasa_client.collect_info()
+        is_linkable_video,
+    ) = nasa_client.collect_info(bot.vimeo_video_quality)
 
     await ctx.send(
         f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
@@ -88,7 +90,7 @@ async def fetch(ctx):
 **Tomorrow's picture** - {tomorrows_picture}"""
     )
 
-    if is_youtube_video:
+    if is_linkable_video:
         await ctx.send("{resource_link}")
     elif status:
         await ctx.send(file=discord.File(resource_link))
@@ -97,5 +99,5 @@ async def fetch(ctx):
         await ctx.send(file=discord.File("error.jpg"))
 
 
-called_once_a_day.start()
+# called_once_a_day.start()
 bot.run(os.getenv("TOKEN"))
