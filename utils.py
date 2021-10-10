@@ -32,11 +32,11 @@ class NasaApod:
         content = soup.select_one("body > p:nth-child(3)").text.strip()
 
         try:
-            tomorrows_image = (
+            tomorrows_picture = (
                 re.search("Tomorrow's picture: (.+?)\n", content).group(1).strip()
             )
         except:
-            tomorrows_image = "TBA"
+            tomorrows_picture = "TBA"
 
         try:
             media_type = "Image"
@@ -44,7 +44,17 @@ class NasaApod:
             filename = f"apod-{date}.jpg"
 
             if os.path.exists(filename):
-                return date, title, name, credit_link, filename, True, media_type, False
+                return (
+                    date,
+                    title,
+                    name,
+                    credit_link,
+                    filename,
+                    True,
+                    tomorrows_picture,
+                    media_type,
+                    False,
+                )
 
             status = self.download_image(self.url + image["src"], filename)
 
@@ -55,14 +65,34 @@ class NasaApod:
 
             video_url = video["src"].split("?")[0]
             if "youtu" in video_url:
-                return date, title, name, credit_link, video_url, True, media_type, True
+                return (
+                    date,
+                    title,
+                    name,
+                    credit_link,
+                    video_url,
+                    True,
+                    tomorrows_picture,
+                    media_type,
+                    True,
+                )
 
             if os.path.exists(filename):
-                return date, title, name, credit_link, filename, True, media_type, False
+                return (
+                    date,
+                    title,
+                    name,
+                    credit_link,
+                    filename,
+                    True,
+                    tomorrows_picture,
+                    media_type,
+                    False,
+                )
 
             status = self.download_video(video_url, filename)
 
-        # print(f"{date=}\n{title=}\n{credit=}\n{tomorrows_image=}\n{media_type=}")
+        # print(f"{date=}\n{title=}\n{credit=}\n{tomorrows_picture=}\n{media_type=}")
         return (
             date,
             title,
@@ -70,7 +100,7 @@ class NasaApod:
             credit_link,
             filename,
             status,
-            tomorrows_image,
+            tomorrows_picture,
             media_type,
             False,
         )
@@ -100,5 +130,5 @@ class NasaApod:
             print("Couldn't load video!")
 
 
-dummy = NasaApod()
-dummy.collect_info()
+# dummy = NasaApod()
+# dummy.collect_info()

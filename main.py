@@ -75,21 +75,25 @@ async def fetch(ctx):
         credit_link,
         resource_link,
         status,
-        tomorrows_image,
+        tomorrows_picture,
+        media_type,
+        is_youtube_video,
     ) = nasa_client.collect_info()
 
     await ctx.send(
-        f"""**NASA - Astronomy Picture of the Day** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
+        f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
 **Date** - {date}
 **Title** - {title}
-**Image Credits** - {credit} [{credit_link}]
-**Tomorrow's Image** - {tomorrows_image}"""
+**{media_type} Credits** - {credit} [{credit_link}]
+**Tomorrow's picture** - {tomorrows_picture}"""
     )
 
-    if status:
+    if is_youtube_video:
+        await ctx.send("{resource_link}")
+    elif status:
         await ctx.send(file=discord.File(resource_link))
     else:
-        await ctx.send("Could **not** load the media!")
+        await ctx.send("Could **not** load image!")
         await ctx.send(file=discord.File("error.jpg"))
 
 
