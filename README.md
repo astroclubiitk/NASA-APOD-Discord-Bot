@@ -4,7 +4,7 @@ Fetches information from NASA APOD [site](https://apod.nasa.gov/apod/).
 
 ## Demo Look
 
-<img src="assets/demolook.PNG" width="650">
+<img src="assets/demolook.jpg" width="650">
 
 ## Contributing
 
