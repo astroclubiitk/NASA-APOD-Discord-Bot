@@ -31,10 +31,18 @@ class NasaApod:
         name = credit.text.strip()
         credit_link = credit["href"]
         content = soup.select_one("body > p:nth-child(3)").text.strip()
+        explanation = (
+            content.replace("\n", " ")
+            .replace("  ", " ")
+            .strip(" ")
+            .strip("Explanation: ")
+            .split(" Tomorrow's picture")[0]
+            .strip(" ")
+        )
 
         try:
             tomorrows_picture = (
-                re.search("Tomorrow's picture: (.+?)\n", content).group(1).strip()
+                re.search("Tomorrow's picture: (.*?)\n", content).group(1).strip()
             )
         except:
             tomorrows_picture = "TBA"
@@ -50,6 +58,7 @@ class NasaApod:
                 return (
                     date,
                     title,
+                    explanation,
                     name,
                     credit_link,
                     filename,
@@ -73,6 +82,7 @@ class NasaApod:
                 return (
                     date,
                     title,
+                    explanation,
                     name,
                     credit_link,
                     video_url,
@@ -88,6 +98,7 @@ class NasaApod:
                 return (
                     date,
                     title,
+                    explanation,
                     name,
                     credit_link,
                     filename,
@@ -105,6 +116,7 @@ class NasaApod:
                 return (
                     date,
                     title,
+                    explanation,
                     name,
                     credit_link,
                     video_url,
@@ -119,6 +131,7 @@ class NasaApod:
         return (
             date,
             title,
+            explanation,
             name,
             credit_link,
             filename,
@@ -160,4 +173,4 @@ class NasaApod:
 
 
 # dummy = NasaApod()
-# dummy.collect_info('360p')
+# print(dummy.collect_info("360p"))

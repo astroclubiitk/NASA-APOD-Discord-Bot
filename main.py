@@ -18,6 +18,7 @@ async def fetcher(ctx):
     (
         date,
         title,
+        explanation,
         credit,
         credit_link,
         resource_link,
@@ -27,20 +28,37 @@ async def fetcher(ctx):
         is_linkable_video,
     ) = nasa_client.collect_info(bot.vimeo_video_quality)
 
+    # embed = discord.Embed(
+    #     title="Astronomy Picture of the Day - NASA :camera_with_flash:",
+    #     url="https://apod.nasa.gov/apod/astropix.html",
+    #     color=discord.Color.purple(),
+    # )
+    # embed.add_field(name="Date", value=f"{date}", inline=False) 
+    # embed.add_field(name="Title", value=f"{title.capitalize()}", inline=False) 
+    # embed.add_field(name=f"{media_type} credits", value=f"{credit} [{credit_link}]", inline=False) 
+    # embed.add_field(name="Explanation", value=f"{explanation}", inline=False) 
+    # embed.add_field(name="Tomorrow's picture", value=f"{tomorrows_picture.capitalize()}", inline=False) 
+    # await ctx.send(embed=embed)
+
     await ctx.send(
         f"""**Astronomy Picture of the Day - NASA** :camera_with_flash: [https://apod.nasa.gov/apod/astropix.html]
 **Date** - {date}
-**Title** - {title}
+**Title** - {title.capitalize()}
 **{media_type} Credits** - {credit} [{credit_link}]
-**Tomorrow's picture** - {tomorrows_picture}"""
+**Explanation** - {explanation}
+**Tomorrow's picture** - {tomorrows_picture.capitalize()}"""
     )
 
     if is_linkable_video:
-        await ctx.send("{resource_link}")
+        if "youtu" in resource_link:
+            id = resource_link.split('/')[-1]
+            await ctx.send(f"https://youtu.be/{id}")
+        else:
+            await ctx.send(f"{resource_link}")
     elif status:
         await ctx.send(file=discord.File(resource_link))
     else:
-        await ctx.send("Could **not** load image!")
+        await ctx.send(f"Could **not** load {media_type.lower()}!")
         await ctx.send(file=discord.File("error.jpg"))
 
 
@@ -77,5 +95,5 @@ async def fetch(ctx):
     await fetcher(ctx)
 
 
-called_once_a_day.start()
+# called_once_a_day.start()
 bot.run(os.getenv("TOKEN"))
