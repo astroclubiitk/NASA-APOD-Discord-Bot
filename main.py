@@ -95,5 +95,5 @@ async def fetch(ctx):
     await fetcher(ctx)
 
 
-# called_once_a_day.start()
+called_once_a_day.start()
 bot.run(os.getenv("TOKEN"))
