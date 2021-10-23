@@ -63,13 +63,13 @@ async def fetcher(ctx):
         await ctx.send(file=discord.File("error.jpg"))
 
 
-@tasks.loop(hours=24)
+@tasks.loop(hours=48)
 async def called_once_a_day():
-    print("=" * 30)
+    print("=" * 40)
     print("⏰ Daily cycle repeats!")
     ctx = bot.get_channel(int(os.getenv("TARGET_CHANNEL_ID")))
     await fetcher(ctx)
-    print("=" * 30)
+    print("=" * 40)
 
 
 @called_once_a_day.before_loop
@@ -96,10 +96,10 @@ Author: Gurbaaz [http://gurbaaz.me], as part of an initiative of **Astronomy Clu
 @bot.command()
 async def fetch(ctx):
     """Fetches the NASA Astrophotography of the Day."""
-    print("=" * 30)
-    print("🪣 Fetch command called!")
+    print("=" * 40)
+    print("🤖 Fetch command called!")
     await fetcher(ctx)
-    print("=" * 30)
+    print("=" * 40)
 
 
 called_once_a_day.start()
