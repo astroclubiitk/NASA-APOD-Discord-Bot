@@ -1,9 +1,3 @@
+.vscode
 *.env
-
-*__pycache__/
-
-apod*jpg
-
-apod*mp4
-
-out
+__pycache__
