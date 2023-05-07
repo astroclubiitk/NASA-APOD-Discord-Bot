@@ -1,6 +1,6 @@
 <img src="assets/apodlogo.png" width="40">
 
-# NASA APOD Discord Bot <img src="assets/discordlogo.png" width="40"> 
+# NASA APOD Discord Bot <img src="assets/discordlogo.png" width="40">
 
 Fetches information from NASA APOD [site](https://apod.nasa.gov/apod/).
 
@@ -16,10 +16,10 @@ Fetches information from NASA APOD [site](https://apod.nasa.gov/apod/).
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested. If you wish to contribute to the codebase, feel free to fork the repository and submit a pull request! Install the dependencies using
+Before creating an issue, please ensure that it hasn't already been reported/suggested. If you wish to contribute to the codebase, feel free to fork the repository and submit a pull request! Install the packages using
 
 ```
-pip install -r requirements.txt
+npm install
 ```
 
 ## License
